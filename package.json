@@ -1,0 +1,27 @@
+{
+  "name": "chirpy-exer",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/SpencerMcFadden/chirpy-exer#readme",
+  "bugs": {
+    "url": "https://github.com/SpencerMcFadden/chirpy-exer/issues"
+  },
+  "license": "ISC",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SpencerMcFadden/chirpy-exer.git"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/index.js",
+    "dev": "npx tsc && node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^26.5.0",
+    "typescript": "^7.0.2"
+  }
+}
