@@ -1,4 +1,8 @@
+import { drizzle } from "drizzle-orm/postgres-js";
+import { migrate } from "drizzle-orm/postgres-js/migrator";
 import express, { Express } from "express";
+import postgres from "postgres";
+
 import { handlerReadiness } from "./api/readiness.js";
 import {
   middlewareErrorHandler,
@@ -8,9 +12,12 @@ import {
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerValidate } from "./api/chirps.js";
+import { config } from "./config.js";
+
+const migrationClient = postgres(config.db.url, { max: 1 });
+await migrate(drizzle(migrationClient), config.db.migrationConfig);
 
 const app: Express = express();
-const port = 8080;
 
 app.use(middlewareLogResponses);
 app.use(express.json());
@@ -34,6 +41,6 @@ app.post("/admin/reset", (req, res, next) => {
 
 app.use(middlewareErrorHandler);
 
-app.listen(port, () => {
-  console.log(`App listening on port ${port}`);
+app.listen(config.api.port, () => {
+  console.log(`App listening on port ${config.api.port}`);
 });
