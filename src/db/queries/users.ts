@@ -5,3 +5,8 @@ export async function createUser(user: User) {
   const [result] = await db.insert(users).values(user).onConflictDoNothing().returning();
   return result;
 }
+
+export async function deleteUsers() {
+  const [result] = await db.delete(users);
+  return result;
+}

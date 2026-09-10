@@ -9,6 +9,7 @@ type Config = {
 
 type APIConfig = {
   fileserverHits: number;
+  platform: string;
   port: string;
 };
 
@@ -18,7 +19,7 @@ type DBConfig = {
 };
 
 const migrationConfig: MigrationConfig = {
-  migrationsFolder: "./db/migrations/",
+  migrationsFolder: "./src/db/migrations/",
 };
 
 export const config: Config = {
@@ -28,6 +29,7 @@ export const config: Config = {
   },
   api: {
     fileserverHits: 0,
+    platform: envOrThrow("PLATFORM"),
     port: envOrThrow("PORT"),
   },
 };
