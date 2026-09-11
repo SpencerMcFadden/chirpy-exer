@@ -15,6 +15,13 @@
       "when": 1789141156546,
       "tag": "0001_soft_owl",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789144495936,
+      "tag": "0002_broad_infant_terrible",
+      "breakpoints": true
     }
   ]
 }
