@@ -13,19 +13,14 @@ export function middlewareLogResponses(req: Request, res: Response, next: NextFu
   next();
 }
 
-export function middlewareMetricsInc(req: Request, res: Response, next: NextFunction) {
+export function middlewareMetricsInc(_: Request, res: Response, next: NextFunction) {
   res.on("finish", () => {
     config.api.fileserverHits += 1;
   });
   next();
 }
 
-export function middlewareErrorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
+export function middlewareErrorHandler(err: Error, _: Request, res: Response, __: NextFunction) {
   let message = "Something went wrong on our end";
   let statusCode = 500;
 
