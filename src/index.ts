@@ -11,7 +11,7 @@ import {
 } from "./api/middleware.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerValidate } from "./api/chirps.js";
+import { handlerCreateChirp } from "./api/chirps.js";
 import { config } from "./config.js";
 import { handlerCreateUser } from "./api/users.js";
 
@@ -29,8 +29,8 @@ app.use("/app", express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
   Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
-app.post("/api/validate_chirp", (req, res, next) => {
-  Promise.resolve(handlerValidate(req, res)).catch(next);
+app.post("/api/chirps", (req, res, next) => {
+  Promise.resolve(handlerCreateChirp(req, res)).catch(next);
 });
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handlerCreateUser(req, res)).catch(next);
