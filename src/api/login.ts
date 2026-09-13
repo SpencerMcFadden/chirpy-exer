@@ -2,13 +2,17 @@ import { Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
 import { BadRequestError, UnauthorizedError } from "./errors.js";
 import { getUserByEmail } from "../db/queries/users.js";
-import { checkPasswordHash } from "../auth.js";
+import { checkPasswordHash, makeJWT } from "../auth.js";
 import { UserResponse } from "../db/schema.js";
+import { config } from "../config.js";
+
+type LoginResponse = UserResponse & { token: string };
 
 export async function handlerLogin(req: Request, res: Response) {
   type parameters = {
     email: string;
     password: string;
+    expiresInSeconds?: number;
   };
   const params: parameters = req.body;
 
@@ -25,7 +29,14 @@ export async function handlerLogin(req: Request, res: Response) {
     throw new UnauthorizedError("Unauthorized");
   }
 
-  const { hashedPassword, ...userResponse } = user;
+  let expireTime = config.jwt.defaultDuration;
+  if (params.expiresInSeconds && params.expiresInSeconds < expireTime) {
+    expireTime = params.expiresInSeconds;
+  }
+  const token = makeJWT(user.id, expireTime, config.jwt.secret);
 
-  respondWithJSON(res, 200, userResponse satisfies UserResponse);
+  const { hashedPassword, ...userResponse } = user;
+  const responseWithToken = { ...userResponse, token: token };
+
+  respondWithJSON(res, 200, responseWithToken satisfies LoginResponse);
 }

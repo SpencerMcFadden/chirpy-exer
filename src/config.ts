@@ -5,6 +5,7 @@ process.loadEnvFile();
 type Config = {
   api: APIConfig;
   db: DBConfig;
+  jwt: JWTConfig;
 };
 
 type APIConfig = {
@@ -16,6 +17,12 @@ type APIConfig = {
 type DBConfig = {
   url: string;
   migrationConfig: MigrationConfig;
+};
+
+type JWTConfig = {
+  defaultDuration: number;
+  secret: string;
+  issuer: string;
 };
 
 const migrationConfig: MigrationConfig = {
@@ -31,6 +38,11 @@ export const config: Config = {
     fileserverHits: 0,
     platform: envOrThrow("PLATFORM"),
     port: envOrThrow("PORT"),
+  },
+  jwt: {
+    defaultDuration: 3600,
+    secret: envOrThrow("TOKEN_SECRET"),
+    issuer: "chirpy",
   },
 };
 

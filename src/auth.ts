@@ -1,10 +1,10 @@
 import { hash, verify } from "argon2";
-import { JwtPayload, sign, verify as jwtverify } from "jsonwebtoken";
-import { UnauthorizedError } from "./api/errors.js";
+import jwt from "jsonwebtoken";
+import { BadRequestError, UnauthorizedError } from "./api/errors.js";
+import { Request } from "express";
+import { config } from "./config.js";
 
-const TOKEN_ISSUER = "chirpy";
-
-type payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
+type payload = Pick<jwt.JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 export async function hashPassword(password: string): Promise<string> {
   return hash(password);
@@ -25,23 +25,23 @@ export function makeJWT(userID: string, expiresIn: number, secret: string): stri
   const now = Math.floor(Date.now() / 100);
   const expires = now + expiresIn;
   const payload: payload = {
-    iss: TOKEN_ISSUER,
+    iss: config.jwt.issuer,
     sub: userID,
     iat: now,
     exp: expires,
   };
-  return sign(payload, secret);
+  return jwt.sign(payload, secret);
 }
 
 export function validateJWT(tokenString: string, secret: string): string {
   let token: payload;
   try {
-    token = jwtverify(tokenString, secret) as JwtPayload;
+    token = jwt.verify(tokenString, secret) as jwt.JwtPayload;
   } catch (error) {
     throw new UnauthorizedError(`Token is invalid or expired`);
   }
 
-  if (token.iss !== TOKEN_ISSUER) {
+  if (token.iss !== config.jwt.issuer) {
     throw new UnauthorizedError("Invalid issuer");
   }
 
@@ -51,4 +51,21 @@ export function validateJWT(tokenString: string, secret: string): string {
   }
 
   return userId;
+}
+
+export function getBearerToken(req: Request): string {
+  const authHeader = req.get("Authorization");
+  if (!authHeader) {
+    throw new BadRequestError("Bearer header not found");
+  }
+  const token = extractTokenFromAuthHeader(authHeader);
+  return token;
+}
+
+export function extractTokenFromAuthHeader(header: string): string {
+  const split = header.split(" ");
+  if (split.length < 2 || split[0] !== "Bearer") {
+    throw new BadRequestError("Bearer header not found");
+  }
+  return split[1];
 }
