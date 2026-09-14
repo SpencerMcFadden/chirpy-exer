@@ -20,6 +20,7 @@ import {
 import { config } from "./config.js";
 import { handlerCreateUser, handlerUpdateUser } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
+import { handlerUpgradeUserToChirpyRed } from "./api/webhooks.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -61,6 +62,10 @@ app.post("/api/users", (req, res, next) => {
 });
 app.put("/api/users", (req, res, next) => {
   Promise.resolve(handlerUpdateUser(req, res)).catch(next);
+});
+
+app.post("/api/polka/webhooks", (req, res, next) => {
+  Promise.resolve(handlerUpgradeUserToChirpyRed(req, res)).catch(next);
 });
 
 app.get("/admin/metrics", (req, res, next) => {

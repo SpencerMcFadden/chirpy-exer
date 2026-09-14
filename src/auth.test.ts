@@ -5,6 +5,7 @@ import {
   makeJWT,
   validateJWT,
   extractTokenFromAuthHeader,
+  extractKeyFromAuthHeader,
 } from "./auth.js";
 import { BadRequestError, UnauthorizedError } from "./api/errors.js";
 
@@ -91,5 +92,34 @@ describe("extractTokenFromAuthHeader", () => {
   it("should throw a BadRequestError if the header is an empty string", () => {
     const header = "";
     expect(() => extractTokenFromAuthHeader(header)).toThrow(BadRequestError);
+  });
+});
+
+describe("extractKeyFromAuthHeader", () => {
+  it("should extract the API Key from a valid header", () => {
+    const apiKey = "myApiKey";
+    const header = `ApiKey ${apiKey}`;
+    expect(extractKeyFromAuthHeader(header)).toBe(apiKey);
+  });
+
+  it("should extract the token even if there are extra parts", () => {
+    const apiKey = "myApiKey";
+    const header = `ApiKey ${apiKey} extra-data`;
+    expect(extractKeyFromAuthHeader(header)).toBe(apiKey);
+  });
+
+  it("should throw a BadRequestError if the header does not contain at least two parts", () => {
+    const header = "";
+    expect(() => extractKeyFromAuthHeader(header)).toThrow(BadRequestError);
+  });
+
+  it('should throw a BadRequestError if the header does not start with "ApiKey"', () => {
+    const header = "Basic mySecretApiKey";
+    expect(() => extractKeyFromAuthHeader(header)).toThrow(BadRequestError);
+  });
+
+  it("should throw a BadRequestError if the header is an empty string", () => {
+    const header = "";
+    expect(() => extractKeyFromAuthHeader(header)).toThrow(BadRequestError);
   });
 });

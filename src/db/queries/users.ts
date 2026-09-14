@@ -27,6 +27,7 @@ export async function getUserFromRefreshToken(token: string) {
     );
   return result;
 }
+
 export async function updateUser(userId: string, email: string, password: string) {
   const [result] = await db
     .update(users)
@@ -35,6 +36,16 @@ export async function updateUser(userId: string, email: string, password: string
     .returning();
   return result;
 }
+
+export async function upgradeUserToChirpyRed(userId: string) {
+  const [result] = await db
+    .update(users)
+    .set({ isChirpyRed: true })
+    .where(eq(users.id, userId))
+    .returning();
+  return result;
+}
+
 export async function deleteUsers() {
   const [result] = await db.delete(users).returning();
   return result;

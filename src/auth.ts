@@ -66,11 +66,28 @@ export function getBearerToken(req: Request): string {
 export function extractTokenFromAuthHeader(header: string): string {
   const split = header.split(" ");
   if (split.length < 2 || split[0] !== "Bearer") {
-    throw new UnauthorizedError("Bearer header not found");
+    throw new BadRequestError("Bearer header not found");
   }
   return split[1];
 }
 
 export function makeRefreshToken() {
   return crypto.randomBytes(32).toString("hex");
+}
+
+export function getAPIKey(req: Request): string {
+  const authHeader = req.get("Authorization");
+  if (!authHeader) {
+    throw new UnauthorizedError("Authorization header not found");
+  }
+  const key = extractKeyFromAuthHeader(authHeader);
+  return key;
+}
+
+export function extractKeyFromAuthHeader(header: string): string {
+  const split = header.split(" ");
+  if (split.length < 2 || split[0] !== "ApiKey") {
+    throw new BadRequestError("Authorization header not found");
+  }
+  return split[1];
 }

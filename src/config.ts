@@ -11,6 +11,7 @@ type Config = {
 type APIConfig = {
   fileserverHits: number;
   platform: string;
+  polkaKey: string;
   port: string;
 };
 
@@ -38,6 +39,7 @@ export const config: Config = {
   api: {
     fileserverHits: 0,
     platform: envOrThrow("PLATFORM"),
+    polkaKey: envOrThrow("POLKA_KEY"),
     port: envOrThrow("PORT"),
   },
   jwt: {

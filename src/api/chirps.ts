@@ -59,7 +59,7 @@ export async function handlerDeleteChirpById(req: Request, res: Response) {
     throw new BadRequestError(`Something went wrong when trying to delete chirp ${chirpId}`);
   }
 
-  respondWithJSON(res, 204, chirp);
+  res.status(204).send();
 }
 
 function validateChirp(body: string) {
