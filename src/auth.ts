@@ -57,7 +57,7 @@ export function validateJWT(tokenString: string, secret: string): string {
 export function getBearerToken(req: Request): string {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    throw new BadRequestError("Bearer header not found");
+    throw new UnauthorizedError("Bearer header not found");
   }
   const token = extractTokenFromAuthHeader(authHeader);
   return token;
@@ -66,7 +66,7 @@ export function getBearerToken(req: Request): string {
 export function extractTokenFromAuthHeader(header: string): string {
   const split = header.split(" ");
   if (split.length < 2 || split[0] !== "Bearer") {
-    throw new BadRequestError("Bearer header not found");
+    throw new UnauthorizedError("Bearer header not found");
   }
   return split[1];
 }
