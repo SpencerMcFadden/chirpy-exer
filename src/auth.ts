@@ -1,5 +1,6 @@
 import { hash, verify } from "argon2";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import { BadRequestError, UnauthorizedError } from "./api/errors.js";
 import { Request } from "express";
 import { config } from "./config.js";
@@ -68,4 +69,8 @@ export function extractTokenFromAuthHeader(header: string): string {
     throw new BadRequestError("Bearer header not found");
   }
   return split[1];
+}
+
+export function makeRefreshToken() {
+  return crypto.randomBytes(32).toString("hex");
 }
