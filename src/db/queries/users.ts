@@ -36,6 +36,6 @@ export async function updateUser(userId: string, email: string, password: string
   return result;
 }
 export async function deleteUsers() {
-  const [result] = await db.delete(users);
+  const [result] = await db.delete(users).returning();
   return result;
 }
